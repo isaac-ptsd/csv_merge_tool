@@ -4,7 +4,6 @@ import json
 from gooey import Gooey, GooeyParser
 
 
-@Gooey(program_name="merge csv files")
 def parse_args():
     stored_args = {}
 
@@ -16,16 +15,16 @@ def parse_args():
     if os.path.isfile(args_file):
         with open(args_file) as data_file:
             stored_args = json.load(data_file)
-    parser = GooeyParser(description='Merge')
-    parser.add_argument('File 1',
+    parser = GooeyParser(description='Will merge ')
+    parser.add_argument('file_1',
                         action='store',
-                        default=stored_args.get('data_directory'),
-                        widget='DirChooser',
+                        default=stored_args.get('file_1'),
+                        widget='FileChooser',
                         help="Choose a csv file")
-    parser.add_argument('File 2',
+    parser.add_argument('file_2',
                         action='store',
-                        default=stored_args.get('data_directory'),
-                        widget='DirChooser',
+                        default=stored_args.get('file_2'),
+                        widget='FileChooser',
                         help="Choose a csv file")
     parser.add_argument('output_directory',
                         action='store',
@@ -36,6 +35,15 @@ def parse_args():
                         action='store',
                         default=stored_args.get('file_name'),
                         help="Name your new file")
+    parser.add_argument('merge_on_column',
+                        action='store',
+                        default=stored_args.get('merge_on_column'),
+                        help="enter the column name to merge on")
+    parser.add_argument('merge_type',
+                        action='store',
+                        default=stored_args.get('merge_type'),
+                        choices=["INNER", "LEFT", "RIGHT", "FULL", "OUTER"],
+                        help="enter the merge_type")
     args = parser.parse_args()
     # Store the values of the arguments so we have them next time we run
     with open(args_file, 'w') as data_file:
@@ -44,18 +52,22 @@ def parse_args():
     return args
 
 
-def csv_merge(file_1, file_2, file_name):
-    file_1_df = pandas.read_csv(file_1)
-    file_2_df = pandas.read_csv(file_2)
-    pandas.merge(file_1_df, file_2_df, on='Local Id', how='inner').to_csv(file_name)
+def csv_merge(file_1, file_2, column_name, merge_type):
+    return pandas.merge(file_1, file_2, on=column_name, how='inner')
 
 
+@Gooey(program_name="merge csv files")
 def main():
     conf = parse_args()
+
     print("Reading Files", flush=True)
-    df_from_soesd = pandas.read_csv('soesd_transcript_file_3_4.csv')
-    df_from_sis = pandas.read_csv('sis_q1_export.csv')
-    pandas.merge(df_from_soesd, df_from_sis, on='Local Id', how='inner').to_csv('combined_data_q1.csv')
+    file_1_df = pandas.read_csv(conf.file_1)
+    file_2_df = pandas.read_csv(conf.file_2)
+    merged_df = csv_merge(file_1_df, file_2_df, conf.merge_on_column, conf.merge_type)
+
+    out_path = os.path.join(conf.output_directory, conf.file_name + '.csv')
+    merged_df.to_csv(out_path)
+    print(out_path, flush=True)
 
 
 if __name__ == '__main__':
