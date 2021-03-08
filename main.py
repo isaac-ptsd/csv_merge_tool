@@ -15,7 +15,7 @@ def parse_args():
     if os.path.isfile(args_file):
         with open(args_file) as data_file:
             stored_args = json.load(data_file)
-    parser = GooeyParser(description='Will merge ')
+    parser = GooeyParser(description='Will merge two csv files into one, using the user provided column name.')
     parser.add_argument('file_1',
                         action='store',
                         default=stored_args.get('file_1'),
@@ -42,7 +42,7 @@ def parse_args():
     parser.add_argument('merge_type',
                         action='store',
                         default=stored_args.get('merge_type'),
-                        choices=["INNER", "LEFT", "RIGHT", "FULL", "OUTER"],
+                        choices=["inner", "left", "right", "full", "outer"],
                         help="enter the merge_type")
     args = parser.parse_args()
     # Store the values of the arguments so we have them next time we run
@@ -53,7 +53,7 @@ def parse_args():
 
 
 def csv_merge(file_1, file_2, column_name, merge_type):
-    return pandas.merge(file_1, file_2, on=column_name, how='inner')
+    return pandas.merge(file_1, file_2, on=column_name, how=merge_type)
 
 
 @Gooey(program_name="merge csv files")
