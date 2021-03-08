@@ -20,17 +20,17 @@ def parse_args():
                         action='store',
                         default=stored_args.get('file_1'),
                         widget='FileChooser',
-                        help="Choose a csv file")
+                        help="Choose a .csv file")
     parser.add_argument('file_2',
                         action='store',
                         default=stored_args.get('file_2'),
                         widget='FileChooser',
-                        help="Choose a csv file")
-    parser.add_argument('output_directory',
+                        help="Choose a .csv file")
+    parser.add_argument('save_to',
                         action='store',
                         widget='DirChooser',
-                        default=stored_args.get('output_directory'),
-                        help="Output directory to save the combined .xlsx files")
+                        default=stored_args.get('save_to'),
+                        help="Output directory to save the combined .csv files")
     parser.add_argument('file_name',
                         action='store',
                         default=stored_args.get('file_name'),
@@ -65,7 +65,7 @@ def main():
     file_2_df = pandas.read_csv(conf.file_2)
     merged_df = csv_merge(file_1_df, file_2_df, conf.merge_on_column, conf.merge_type)
 
-    out_path = os.path.join(conf.output_directory, conf.file_name + '.csv')
+    out_path = os.path.join(conf.save_to, conf.file_name + '.csv')
     merged_df.to_csv(out_path)
     print(out_path, flush=True)
 
