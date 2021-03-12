@@ -42,7 +42,7 @@ def parse_args():
     parser.add_argument('merge_type',
                         action='store',
                         default=stored_args.get('merge_type'),
-                        choices=["inner", "left", "right", "full", "outer"],
+                        choices=["inner", "left", "right", "outer"],
                         help="enter the merge_type")
     args = parser.parse_args()
     # Store the values of the arguments so we have them next time we run
