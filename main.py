@@ -39,11 +39,11 @@ def parse_args():
                         action='store',
                         default=stored_args.get('merge_on_column'),
                         help="enter the column name to merge on")
-    parser.add_argument('merge_type',
-                        action='store',
-                        default=stored_args.get('merge_type'),
-                        choices=["inner", "left", "right", "outer"],
-                        help="enter the merge_type")
+    # parser.add_argument('merge_type',
+    #                     action='store',
+    #                     default=stored_args.get('merge_type'),
+    #                     choices=["inner", "left", "right", "outer"],
+    #                     help="enter the merge_type")
     args = parser.parse_args()
     # Store the values of the arguments so we have them next time we run
     with open(args_file, 'w') as data_file:
@@ -52,7 +52,7 @@ def parse_args():
     return args
 
 
-def csv_merge(file_1, file_2, column_name, merge_type):
+def csv_merge(file_1, file_2, column_name, merge_type="inner"):
     return pandas.merge(file_1, file_2, on=column_name, how=merge_type)
 
 
@@ -63,7 +63,7 @@ def main():
     print("Reading Files", flush=True)
     file_1_df = pandas.read_csv(conf.file_1)
     file_2_df = pandas.read_csv(conf.file_2)
-    merged_df = csv_merge(file_1_df, file_2_df, conf.merge_on_column, conf.merge_type)
+    merged_df = csv_merge(file_1_df, file_2_df, conf.merge_on_column)
 
     out_path = os.path.join(conf.save_to, conf.file_name + '.csv')
     merged_df.to_csv(out_path)
