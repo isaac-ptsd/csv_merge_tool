@@ -58,14 +58,14 @@ def csv_merge(file_1, file_2, column_name, merge_type="inner"):
 
 @Gooey(program_name="merge csv files")
 def main():
-    conf = parse_args()
+    user_input = parse_args()
 
     print("Reading Files", flush=True)
-    file_1_df = pandas.read_csv(conf.file_1)
-    file_2_df = pandas.read_csv(conf.file_2)
-    merged_df = csv_merge(file_1_df, file_2_df, conf.merge_on_column)
+    file_1_df = pandas.read_csv(user_input.file_1)
+    file_2_df = pandas.read_csv(user_input.file_2)
+    merged_df = csv_merge(file_1_df, file_2_df, user_input.merge_on_column)
 
-    out_path = os.path.join(conf.save_to, conf.file_name + '.csv')
+    out_path = os.path.join(user_input.save_to, user_input.file_name + '.csv')
     merged_df.to_csv(out_path)
     print(out_path, flush=True)
 
